@@ -37,6 +37,9 @@
 #include "dcsam/SemanticBearingRangeFactor.h"
 #include "dcsam/SmartDiscretePriorFactor.h"
 
+#include "dcsam/ContinuousEMFactor.h"
+#include "dcsam/ContinuousMaxMixtureFactor.h"
+
 const double tol = 1e-7;
 
 /******************************************************************************/

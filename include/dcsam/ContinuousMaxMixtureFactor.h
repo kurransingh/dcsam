@@ -40,7 +40,7 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
   ContinuousMaxMixtureFactor() = default;
 
   explicit ContinuousMaxMixtureFactor(const gtsam::KeyVector& continuousKeys,
-                              const std::vector<DCFactorType> factors,
+                              const std::vector<ContinuousFactorType> factors,
                               const std::vector<double> weights,
                               const bool normalized)
       : Base(continuousKeys), normalized_(normalized) {
@@ -105,7 +105,7 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
     }
   }
 
-  bool equals(const DCFactor& other, double tol = 1e-9) const override {
+  bool equals(const gtsam::NonlinearFactor& other, double tol = 1e-9) const override {
     if (!dynamic_cast<const ContinuousMaxMixtureFactor*>(&other)) return false;
     const ContinuousMaxMixtureFactor& f(static_cast<const ContinuousMaxMixtureFactor&>(other));
     if (factors_.size() != f.factors_.size()) return false;
