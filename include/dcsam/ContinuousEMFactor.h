@@ -46,20 +46,18 @@ class ContinuousEMFactor : public gtsam::NonlinearFactor {
 
   ContinuousEMFactor() = default;
 
-  explicit ContinuousEMFactor(const gtsam::KeyVector& continuousKeys,
-                      const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousEMFactor(const std::vector<ContinuousFactorType> factors,
                       const std::vector<double> weights, const bool normalized)
-      : Base(continuousKeys), normalized_(normalized) {
+      : Base(), normalized_(normalized) {
     factors_ = factors;
     for (size_t i = 0; i < weights.size(); i++) {
       log_weights_.push_back(log(weights[i]));
     }
   }
 
-  explicit ContinuousEMFactor(const gtsam::KeyVector& continuousKeys,
-                      const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousEMFactor(const std::vector<ContinuousFactorType> factors,
                       const bool normalized)
-      : Base(continuousKeys), normalized_(normalized) {
+      : Base(), normalized_(normalized) {
     factors_ = factors;
     for (size_t i = 0; i < factors_.size(); i++) {
       log_weights_.push_back(0);
@@ -98,8 +96,8 @@ class ContinuousEMFactor : public gtsam::NonlinearFactor {
     for (size_t i = 0; i < factors_.size(); i++) {
       double error =
           factors_[i].error(continuousVals) - log_weights_[i];
-      if (!normalized_)
-        error += factors_[i].logNormalizingConstant(continuousVals);
+      // if (!normalized_)
+      //   error += factors_[i].logNormalizingConstant(continuousVals);
       logprobs.push_back(-error);
     }
     return logprobs;
@@ -111,8 +109,8 @@ class ContinuousEMFactor : public gtsam::NonlinearFactor {
     for (size_t i = 0; i < factors_.size(); i++) {
       double error =
           factors_[i].error(continuousVals) - log_weights_[i];
-      if (!normalized_)
-        error += factors_[i].logNormalizingConstant(continuousVals);
+      // if (!normalized_)
+      //   error += factors_[i].logNormalizingConstant(continuousVals);
 
       if (error < min_error) {
         min_error = error;
@@ -136,9 +134,9 @@ class ContinuousEMFactor : public gtsam::NonlinearFactor {
     if (!dynamic_cast<const ContinuousEMFactor*>(&other)) return false;
     const ContinuousEMFactor& f(static_cast<const ContinuousEMFactor&>(other));
     if (factors_.size() != f.factors_.size()) return false;
-    for (size_t i = 0; i < factors_.size(); i++) {
-      if (!factors_[i].equals(f.factors_[i])) return false;
-    }
+    // for (size_t i = 0; i < factors_.size(); i++) {
+    //   if (!factors_[i].equals(f.factors_[i])) return false;
+    // }
     return ((log_weights_ == f.log_weights_) && (normalized_ == f.normalized_));
   }
 

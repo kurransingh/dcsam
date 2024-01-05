@@ -39,21 +39,19 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
 
   ContinuousMaxMixtureFactor() = default;
 
-  explicit ContinuousMaxMixtureFactor(const gtsam::KeyVector& continuousKeys,
-                              const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousMaxMixtureFactor(const std::vector<ContinuousFactorType> factors,
                               const std::vector<double> weights,
                               const bool normalized)
-      : Base(continuousKeys), normalized_(normalized) {
+      : Base(), normalized_(normalized) {
     factors_ = factors;
     for (size_t i = 0; i < weights.size(); i++) {
       log_weights_.push_back(log(weights[i]));
     }
   }
 
-  explicit ContinuousMaxMixtureFactor(const gtsam::KeyVector& continuousKeys,
-                              const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousMaxMixtureFactor(const std::vector<ContinuousFactorType> factors,
                               const bool normalized)
-      : Base(continuousKeys), normalized_(normalized) {
+      : Base(), normalized_(normalized) {
     factors_ = factors;
     for (size_t i = 0; i < factors_.size(); i++) {
       log_weights_.push_back(0);
@@ -74,10 +72,11 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
     assert(min_error_idx < factors_.size());
     double min_error =
         factors_[min_error_idx].error(continuousVals);
-    if (normalized_) return min_error - log_weights_[min_error_idx];
-    return min_error +
-           factors_[min_error_idx].logNormalizingConstant(continuousVals) -
-           log_weights_[min_error_idx];
+    // if (normalized_) {
+    return min_error - log_weights_[min_error_idx]; //}
+    // return min_error +
+    //        factors_[min_error_idx].logNormalizingConstant(continuousVals) -
+    //        log_weights_[min_error_idx];
   }
 
   size_t getActiveFactorIdx(const gtsam::Values& continuousVals) const {
@@ -86,8 +85,8 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
     for (size_t i = 0; i < factors_.size(); i++) {
       double error =
           factors_[i].error(continuousVals) - log_weights_[i];
-      if (!normalized_)
-        error += factors_[i].logNormalizingConstant(continuousVals);
+      // if (!normalized_)
+      //   error += factors_[i].logNormalizingConstant(continuousVals);
 
       if (error < min_error) {
         min_error = error;
@@ -109,9 +108,9 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
     if (!dynamic_cast<const ContinuousMaxMixtureFactor*>(&other)) return false;
     const ContinuousMaxMixtureFactor& f(static_cast<const ContinuousMaxMixtureFactor&>(other));
     if (factors_.size() != f.factors_.size()) return false;
-    for (size_t i = 0; i < factors_.size(); i++) {
-      if (!factors_[i].equals(f.factors_[i])) return false;
-    }
+    // for (size_t i = 0; i < factors_.size(); i++) {
+    //   if (!factors_[i].equals(f.factors_[i])) return false;
+    // }
     return ((log_weights_ == f.log_weights_) && (normalized_ == f.normalized_));
   }
 
