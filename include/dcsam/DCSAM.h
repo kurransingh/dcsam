@@ -205,11 +205,19 @@ class DCSAM {
     return isam_.getFactorsUnsafe();
   }
 
+  std::pair<double, double> getUpdateErrors() const {
+    std::pair<double, double> p(*results.errorBefore, *results.errorAfter);
+    return p;
+  }
+
+  gtsam::ISAM2Result getISAM2Result() const { return results; }
+
  private:
   // Global factor graph and iSAM2 instance
   gtsam::NonlinearFactorGraph fg_;  // NOTE: unused
   gtsam::ISAM2Params isam_params_;
   gtsam::ISAM2 isam_;
+  gtsam::ISAM2Result results;
   gtsam::DiscreteFactorGraph dfg_;
   gtsam::Values currContinuous_;
   DiscreteValues currDiscrete_;

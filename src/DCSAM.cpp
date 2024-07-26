@@ -18,12 +18,14 @@ DCSAM::DCSAM() {
   // Setup isam
   isam_params_.relinearizeThreshold = 0.01;
   isam_params_.relinearizeSkip = 1;
-  isam_params_.setOptimizationParams(gtsam::ISAM2DoglegParams());
+  isam_params_.evaluateNonlinearError = true;
+  isam_params_.setOptimizationParams(gtsam::ISAM2GaussNewtonParams());
   isam_ = gtsam::ISAM2(isam_params_);
 }
 
 DCSAM::DCSAM(const gtsam::ISAM2Params &isam_params)
     : isam_params_(isam_params) {
+  isam_params_.evaluateNonlinearError = true;
   isam_ = gtsam::ISAM2(isam_params_);
 }
 
@@ -132,7 +134,9 @@ void DCSAM::updateDiscreteInfo(const gtsam::Values &continuousVals,
 }
 
 void DCSAM::updateContinuous() {
-  isam_.update();
+  results = isam_.update();
+  std::cout << "ISAM2 error before: " << *results.errorBefore << std::endl;
+  std::cout << "ISAM2 error before: " << *results.errorAfter << std::endl;
   currContinuous_ = isam_.calculateEstimate();
 }
 
@@ -150,7 +154,7 @@ void DCSAM::updateContinuousInfo(const DiscreteValues &discreteVals,
     }
   }
   updateParams.newAffectedKeys = std::move(newAffectedKeys);
-  isam_.update(newFactors, initialGuess, updateParams);
+  results = isam_.update(newFactors, initialGuess, updateParams);
 }
 
 DiscreteValues DCSAM::solveDiscrete() const {

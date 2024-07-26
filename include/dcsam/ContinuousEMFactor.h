@@ -46,9 +46,10 @@ class ContinuousEMFactor : public gtsam::NonlinearFactor {
 
   ContinuousEMFactor() = default;
 
-  explicit ContinuousEMFactor(const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousEMFactor(const gtsam::KeyVector& keys,
+                      const std::vector<ContinuousFactorType> factors,
                       const std::vector<double> weights, const bool normalized)
-      : Base(), normalized_(normalized) {
+      : Base(keys), normalized_(normalized) {
     factors_ = factors;
     for (size_t i = 0; i < weights.size(); i++) {
       log_weights_.push_back(log(weights[i]));

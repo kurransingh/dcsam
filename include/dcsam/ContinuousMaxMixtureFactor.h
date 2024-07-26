@@ -39,7 +39,8 @@ class ContinuousMaxMixtureFactor : public gtsam::NonlinearFactor {
 
   ContinuousMaxMixtureFactor() = default;
 
-  explicit ContinuousMaxMixtureFactor(const std::vector<ContinuousFactorType> factors,
+  explicit ContinuousMaxMixtureFactor(
+                            const std::vector<ContinuousFactorType> factors,
                               const std::vector<double> weights,
                               const bool normalized)
       : Base(), normalized_(normalized) {
